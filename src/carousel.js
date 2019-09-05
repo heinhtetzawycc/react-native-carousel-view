@@ -75,6 +75,7 @@ export default class Carousel extends Component {
 
     this.state = {
       activePage: props.initialPage > 0 ? props.initialPage : 0,
+      children : this.props.children
     };
 
     (this: any).getWidth = this.getWidth.bind(this);
@@ -90,7 +91,7 @@ export default class Carousel extends Component {
   }
 
   _filterChildren() {
-    const {children} = this.props;
+    const {children} = this.state;
 
     if (!children) {
       throw new Error('You have to set children inside Carousel component');
@@ -102,7 +103,10 @@ export default class Carousel extends Component {
 
   componentWillReceiveProps(nextProps: Props) {
     this._filterChildren();
-
+    this.setState({
+      activePage: nextProps.initialPage > 0 ? nextProps.initialPage : 0,
+      children : nextProps.children
+    })
     // when received props it will update all views, with new props.
     this.clearTimeout(this.timer);
     this._resetPager();
@@ -124,7 +128,7 @@ export default class Carousel extends Component {
       this.pager.scrollToPage(initialPage, false);
     }
 
-    if (this.children) {
+    if (this.state.children) {
       this._setUpTimer();
     }
   }
@@ -135,7 +139,7 @@ export default class Carousel extends Component {
       this.clearTimeout(this.timer);
     }
 
-    if (animate && this.children.length > 1) {
+    if (animate && this.state.children.length > 1) {
       this.timer = this.setTimeout(this._animateNextPage, this.props.delay);
     }
   }
@@ -150,7 +154,7 @@ export default class Carousel extends Component {
 
   _animateNextPage() {
     let {activePage} = this.state;
-    if (activePage < this.children.length - 1) {
+    if (activePage < this.state.children.length - 1) {
       activePage++;
     } else if (this.props.loop) {
       activePage = 0;
@@ -194,7 +198,7 @@ export default class Carousel extends Component {
     const positionIndicatorStyle = indicatorAtBottom ?
       {bottom: indicatorOffset} :
       {top: indicatorOffset};
-    const indicatorWidth = this.children.length * indicatorSpace;
+    const indicatorWidth = this.state.children.length * indicatorSpace;
     let style;
     let position;
 
@@ -203,7 +207,7 @@ export default class Carousel extends Component {
       left: (this.getWidth() - indicatorWidth) / 2,
     };
 
-    this.children.forEach((child, i) => {
+    this.state.children.forEach((child, i) => {
       style = i === activePage ?
         {color: indicatorColor} :
         {color: inactiveIndicatorColor};
@@ -250,7 +254,7 @@ export default class Carousel extends Component {
             onBegin={this._onAnimationBegin}
             onEnd={this._onAnimationEnd}
           >
-            {this.children}
+            {this.state.children}
           </CarouselPager>
         </View>
         {this.renderPageIndicator()}
