@@ -103,13 +103,16 @@ export default class Carousel extends Component {
 
   componentWillReceiveProps(nextProps: Props) {
     this._filterChildren();
+    
     this.setState({
       activePage: nextProps.initialPage > 0 ? nextProps.initialPage : 0,
       children : nextProps.children
-    })
+    },()=>{
+      this.clearTimeout(this.timer);
+      this._resetPager();
+    }
+    )
     // when received props it will update all views, with new props.
-    this.clearTimeout(this.timer);
-    this._resetPager();
   }
 
   componentDidMount() {
@@ -122,12 +125,9 @@ export default class Carousel extends Component {
   }
 
   _resetPager() {
-    const {initialPage} = this.props;
-    if (initialPage > 0) {
-      this.setState({activePage: initialPage});
-      this.pager.scrollToPage(initialPage, false);
-    }
-
+    console.log('active page in reset ',this.state.activePage)
+    const {activePage} = this.state;
+      this.pager.scrollToPage(activePage, false);
     if (this.state.children) {
       this._setUpTimer();
     }
@@ -181,6 +181,7 @@ export default class Carousel extends Component {
     if (onPageChange) {
       onPageChange(activePage);
     }
+
     this.setState({activePage}, this._setUpTimer());
   }
 
@@ -206,7 +207,6 @@ export default class Carousel extends Component {
       minWidth: indicatorWidth,
       left: (this.getWidth() - indicatorWidth) / 2,
     };
-
     this.state.children.forEach((child, i) => {
       style = i === activePage ?
         {color: indicatorColor} :
