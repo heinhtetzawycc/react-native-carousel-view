@@ -23,7 +23,7 @@ export default class CarouselPager extends Component {
   constructor(props: Props) {
     super(props);
     (this: any).scrollToPage = this.scrollToPage.bind(this);
-    (this: any)._onMomentumScrollEnd = this._onMomentumScrollEnd.bind(this);
+    (this: any)._onScrollEndDrag = this._onScrollEndDrag.bind(this);
   }
 
   scrollToPage(page: number, animated?: boolean) {
@@ -38,7 +38,7 @@ export default class CarouselPager extends Component {
     });
   }
 
-  _onMomentumScrollEnd(e) {
+  _onScrollEndDrag(e) {
     const {onEnd, width} = this.props;
     const activePage = e.nativeEvent.contentOffset.x / width;
     onEnd(activePage);
@@ -77,7 +77,7 @@ export default class CarouselPager extends Component {
         bounces={false}
         onScrollBeginDrag={onBegin}
         onScroll={onScroll}
-        onMomentumScrollEnd={this._onMomentumScrollEnd}
+        onScrollEndDrag={this._onScrollEndDrag}
         scrollsToTop={false}
       >
         {newChildren}
