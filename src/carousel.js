@@ -129,7 +129,6 @@ export default class Carousel extends Component {
   }
 
   _resetPager() {
-    console.log('active page in reset ',this.state.activePage)
     const {activePage} = this.state;
       this.pager.scrollToPage(activePage, false);
     if (this.state.children) {
